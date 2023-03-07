@@ -17,9 +17,9 @@ const ImgInput = ({ setImage }: Props) => {
         data.append("file", file);
       }
       data.append("upload_preset", "j3ilig6y");
-      data.append("cloud_name", "dehcz6vtn");
+      data.append("cloud_name", `${process.env.CLOUDINAEY_CLOUD_NAME}`);
       const response = await fetch(
-        "https://api.cloudinary.com/v1_1/dehcz6vtn/image/upload",
+        `https://api.cloudinary.com/v1_1/${process.env.CLOUDINAEY_CLOUD_NAME}/image/upload`,
         { method: "POST", body: data }
       );
       const jsonData = await response.json();

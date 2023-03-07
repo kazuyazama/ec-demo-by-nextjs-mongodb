@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 const connectDB =  async() => {
  try {
     await mongoose.connect(
-      "mongodb+srv://restarts:korakuen@cluster0.zr32qgk.mongodb.net/appDataBase?retryWrites=true&w=majority"
+      `${process.env.MONGO_DB_API_KEY}`
     );
     console.log("Success Connected to MongoDB");
   } catch (error) {
