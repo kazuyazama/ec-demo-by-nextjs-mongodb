@@ -1,11 +1,13 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from '@/styles/Home.module.css'
+import Head from "next/head";
+import Image from "next/image";
+import { Inter } from "next/font/google";
+import { GetServerSideProps, GetStaticProps, NextPage } from "next";
+import { ReadAllDataType } from "@/utils/types";
+import Link from "next/link";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] });
 
-export default function Home() {
+const Home: NextPage<ReadAllDataType> = ({ allItems }) => {
   return (
     <>
       <Head>
@@ -14,110 +16,71 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>pages/index.tsx</code>
-          </p>
-          <div>
-            <a
-              href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              By{' '}
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                className={styles.vercelLogo}
-                width={100}
-                height={24}
-                priority
-              />
-            </a>
-          </div>
+
+      <section>
+        <div className="max-w-screen-xl px-4 py-8 mx-auto sm:px-6 sm:py-12 lg:px-8">
+          <header className="flex justify-between ">
+            <div className="grow">
+              <h2 className="text-xl font-bold text-gray-900 sm:text-3xl">
+                Product Collection
+              </h2>
+
+              <p className="max-w-xl mt-4 text-gray-500">
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Itaque
+                praesentium cumque iure dicta incidunt est ipsam, officia dolor
+                fugit natus?
+              </p>
+            </div>
+            <div className="">
+              <p>アイテム作成</p>
+            </div>
+          </header>
+
+          <ul className="grid gap-4 mt-8 sm:grid-cols-2 lg:grid-cols-4">
+            {allItems.map((item) => (
+              <li key={item._id} className={item._id}>
+                <Link href={`item/${item._id}`} className="block overflow-hidden group">
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    width={750}
+                    height={500}
+                    className="h-[350px] w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[450px]"
+                  />
+
+                  <div className="relative pt-3 bg-white">
+                    <h3 className="text-xs text-gray-700 group-hover:underline group-hover:underline-offset-4">
+                      {item.title}
+                    </h3>
+
+                    <p className="mt-2">
+                      <span className="sr-only"> Regular Price </span>
+
+                      <span className="tracking-wider text-gray-900">
+                        {" "}
+                        ￥{item.price}{" "}
+                      </span>
+                    </p>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
-
-        <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
-          />
-          <div className={styles.thirteen}>
-            <Image
-              src="/thirteen.svg"
-              alt="13"
-              width={40}
-              height={31}
-              priority
-            />
-          </div>
-        </div>
-
-        <div className={styles.grid}>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Docs <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Find in-depth information about Next.js features and&nbsp;API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Learn <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Templates <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Deploy <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
+      </section>
     </>
-  )
-}
+  );
+};
+
+export const getServerSideProps: GetServerSideProps<
+  ReadAllDataType
+> = async () => {
+  const res = await fetch("http://localhost:3000/api/item/readAll");
+
+  const allItems = await res.json();
+  return {
+    props: allItems,
+  };
+};
+
+export default Home;
